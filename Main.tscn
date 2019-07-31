@@ -1,3 +1,69 @@
-[gd_scene format=2]
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Tileset.tres" type="TileSet" id=1]
+[ext_resource path="res://Main.cs" type="Script" id=2]
+[ext_resource path="res://ExclusiveCheckbox.cs" type="Script" id=3]
 
 [node name="Node" type="Node"]
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 5, 5 )
+format = 1
+script = ExtResource( 2 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+
+[node name="Panel" type="Panel" parent="."]
+self_modulate = Color( 0, 0, 0, 1 )
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -144.0
+margin_right = 69.0
+
+[node name="Exclusive Checkbox" type="VBoxContainer" parent="Panel"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -136.0
+margin_right = 66.0
+script = ExtResource( 3 )
+sender = "Sand"
+
+[node name="Sand" type="CheckBox" parent="Panel/Exclusive Checkbox"]
+margin_right = 66.0
+margin_bottom = 24.0
+pressed = true
+text = "Sand"
+
+[node name="Water" type="CheckBox" parent="Panel/Exclusive Checkbox"]
+margin_top = 28.0
+margin_right = 66.0
+margin_bottom = 52.0
+text = "Water"
+
+[node name="Plant" type="CheckBox" parent="Panel/Exclusive Checkbox"]
+margin_top = 56.0
+margin_right = 66.0
+margin_bottom = 80.0
+text = "Plant"
+
+[node name="Oil" type="CheckBox" parent="Panel/Exclusive Checkbox"]
+margin_top = 84.0
+margin_right = 66.0
+margin_bottom = 108.0
+text = "Oil"
+
+[node name="Fire" type="CheckBox" parent="Panel/Exclusive Checkbox"]
+margin_top = 112.0
+margin_right = 66.0
+margin_bottom = 136.0
+text = "Fire"
+[connection signal="mouse_entered" from="Panel" to="TileMap" method="setCanClick" binds= [ false ]]
+[connection signal="mouse_exited" from="Panel" to="TileMap" method="setCanClick" binds= [ true ]]
+[connection signal="checkboxChanged" from="Panel/Exclusive Checkbox" to="TileMap" method="SetParticle"]
+[connection signal="pressed" from="Panel/Exclusive Checkbox/Sand" to="Panel/Exclusive Checkbox" method="changeSelected" binds= [ 0, "Sand" ]]
+[connection signal="pressed" from="Panel/Exclusive Checkbox/Water" to="Panel/Exclusive Checkbox" method="changeSelected" binds= [ 1, "Water" ]]
+[connection signal="pressed" from="Panel/Exclusive Checkbox/Plant" to="Panel/Exclusive Checkbox" method="changeSelected" binds= [ 2, "Plant" ]]
+[connection signal="pressed" from="Panel/Exclusive Checkbox/Oil" to="Panel/Exclusive Checkbox" method="changeSelected" binds= [ 3, "Oil" ]]
+[connection signal="pressed" from="Panel/Exclusive Checkbox/Fire" to="Panel/Exclusive Checkbox" method="changeSelected" binds= [ 4, "Fire" ]]

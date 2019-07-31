@@ -1,0 +1,53 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Tileset.png" type="Texture" id=1]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Sand" type="Sprite" parent="."]
+position = Vector2( 61.5722, 73.503 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 5, 5 )
+
+[node name="Water" type="Sprite" parent="."]
+position = Vector2( 73.1982, 72.7655 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 5, 0, 5, 5 )
+
+[node name="Plant" type="Sprite" parent="."]
+position = Vector2( 61.1172, 84.7366 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 0, 5, 5, 5 )
+
+[node name="Oil" type="Sprite" parent="."]
+position = Vector2( 73.0257, 84.3759 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 5, 5, 5, 5 )
+
+[node name="Fire1" type="Sprite" parent="."]
+position = Vector2( 85.0282, 73.2675 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 10, 0, 5, 5 )
+
+[node name="Fire2" type="Sprite" parent="."]
+position = Vector2( 96.4973, 73.2363 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 15, 0, 5, 5 )
+
+[node name="Fire3" type="Sprite" parent="."]
+position = Vector2( 85.1537, 84.5013 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 10, 5, 5, 5 )
+
+[node name="Fire4" type="Sprite" parent="."]
+position = Vector2( 96.8424, 84.6269 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 15, 5, 5, 5 )

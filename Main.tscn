@@ -8,62 +8,105 @@
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource( 1 )
-cell_size = Vector2( 5, 5 )
+cell_size = Vector2( 2, 2 )
 format = 1
 script = ExtResource( 2 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 
-[node name="Panel" type="Panel" parent="."]
-self_modulate = Color( 0, 0, 0, 1 )
-anchor_top = 1.0
-anchor_bottom = 1.0
-margin_top = -144.0
-margin_right = 69.0
+[node name="PanelContainer" type="Control" parent="."]
 
-[node name="Exclusive Checkbox" type="VBoxContainer" parent="Panel"]
-anchor_top = 1.0
-anchor_bottom = 1.0
-margin_top = -136.0
-margin_right = 66.0
+[node name="Exclusive Checkbox" type="VBoxContainer" parent="PanelContainer"]
+margin_right = 90.0
+margin_bottom = 168.0
+custom_constants/separation = 0
 script = ExtResource( 3 )
 sender = "Sand"
 
-[node name="Sand" type="CheckBox" parent="Panel/Exclusive Checkbox"]
-margin_right = 66.0
+[node name="Sand" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
+margin_right = 90.0
 margin_bottom = 24.0
 pressed = true
 text = "Sand"
 
-[node name="Water" type="CheckBox" parent="Panel/Exclusive Checkbox"]
-margin_top = 28.0
-margin_right = 66.0
-margin_bottom = 52.0
+[node name="Water" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
+margin_top = 24.0
+margin_right = 90.0
+margin_bottom = 48.0
 text = "Water"
 
-[node name="Plant" type="CheckBox" parent="Panel/Exclusive Checkbox"]
-margin_top = 56.0
-margin_right = 66.0
-margin_bottom = 80.0
+[node name="Plant" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
+margin_top = 48.0
+margin_right = 90.0
+margin_bottom = 72.0
 text = "Plant"
 
-[node name="Oil" type="CheckBox" parent="Panel/Exclusive Checkbox"]
-margin_top = 84.0
-margin_right = 66.0
-margin_bottom = 108.0
+[node name="Oil" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
+margin_top = 72.0
+margin_right = 90.0
+margin_bottom = 96.0
 text = "Oil"
 
-[node name="Fire" type="CheckBox" parent="Panel/Exclusive Checkbox"]
-margin_top = 112.0
-margin_right = 66.0
-margin_bottom = 136.0
+[node name="Fire" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
+margin_top = 96.0
+margin_right = 90.0
+margin_bottom = 120.0
 text = "Fire"
-[connection signal="mouse_entered" from="Panel" to="TileMap" method="setCanClick" binds= [ false ]]
-[connection signal="mouse_exited" from="Panel" to="TileMap" method="setCanClick" binds= [ true ]]
-[connection signal="checkboxChanged" from="Panel/Exclusive Checkbox" to="TileMap" method="SetParticle"]
-[connection signal="pressed" from="Panel/Exclusive Checkbox/Sand" to="Panel/Exclusive Checkbox" method="changeSelected" binds= [ 0, "Sand" ]]
-[connection signal="pressed" from="Panel/Exclusive Checkbox/Water" to="Panel/Exclusive Checkbox" method="changeSelected" binds= [ 1, "Water" ]]
-[connection signal="pressed" from="Panel/Exclusive Checkbox/Plant" to="Panel/Exclusive Checkbox" method="changeSelected" binds= [ 2, "Plant" ]]
-[connection signal="pressed" from="Panel/Exclusive Checkbox/Oil" to="Panel/Exclusive Checkbox" method="changeSelected" binds= [ 3, "Oil" ]]
-[connection signal="pressed" from="Panel/Exclusive Checkbox/Fire" to="Panel/Exclusive Checkbox" method="changeSelected" binds= [ 4, "Fire" ]]
+
+[node name="Wall" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
+margin_top = 120.0
+margin_right = 90.0
+margin_bottom = 144.0
+text = "Wall"
+
+[node name="Automata" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
+margin_top = 144.0
+margin_right = 90.0
+margin_bottom = 168.0
+text = "Automata"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+margin_left = 70.0
+margin_right = 121.0
+margin_bottom = 80.0
+script = ExtResource( 3 )
+sender = "1x1"
+
+[node name="1x1" type="CheckBox" parent="PanelContainer/VBoxContainer"]
+margin_right = 51.0
+margin_bottom = 24.0
+pressed = true
+text = "1x1"
+
+[node name="3x3" type="CheckBox" parent="PanelContainer/VBoxContainer"]
+margin_top = 28.0
+margin_right = 51.0
+margin_bottom = 52.0
+text = "3x3"
+
+[node name="5x5" type="CheckBox" parent="PanelContainer/VBoxContainer"]
+margin_top = 56.0
+margin_right = 51.0
+margin_bottom = 80.0
+text = "5x5"
+
+[node name="Pause" type="CheckBox" parent="PanelContainer"]
+margin_left = 70.0
+margin_top = 96.0
+margin_right = 160.0
+margin_bottom = 120.0
+text = "Pause"
+[connection signal="checkboxChanged" from="PanelContainer/Exclusive Checkbox" to="TileMap" method="SetParticle"]
+[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Sand" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 0, "Sand" ]]
+[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Water" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 1, "Water" ]]
+[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Plant" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 2, "Plant" ]]
+[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Oil" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 3, "Oil" ]]
+[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Fire" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 4, "Fire" ]]
+[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Wall" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 8, "Wall" ]]
+[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Automata" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 9, "Automata" ]]
+[connection signal="checkboxChanged" from="PanelContainer/VBoxContainer" to="TileMap" method="SetBrushSize"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/1x1" to="PanelContainer/VBoxContainer" method="changeSelected" binds= [ 1, "1x1" ]]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/3x3" to="PanelContainer/VBoxContainer" method="changeSelected" binds= [ 3, "3x3" ]]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/5x5" to="PanelContainer/VBoxContainer" method="changeSelected" binds= [ 5, "5x5" ]]
+[connection signal="toggled" from="PanelContainer/Pause" to="TileMap" method="TogglePause"]

@@ -1,27 +1,32 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Tileset.tres" type="TileSet" id=1]
-[ext_resource path="res://Main.cs" type="Script" id=2]
-[ext_resource path="res://ExclusiveCheckbox.cs" type="Script" id=3]
+[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://BlackUIStylebox.tres" type="StyleBox" id=3]
+[ext_resource path="res://ExclusiveCheckbox.cs" type="Script" id=4]
 
-[node name="Node" type="Node"]
-
-[node name="TileMap" type="TileMap" parent="."]
+[node name="TileMap" type="TileMap"]
 tile_set = ExtResource( 1 )
-cell_size = Vector2( 2, 2 )
+cell_size = Vector2( 4, 4 )
 format = 1
-script = ExtResource( 2 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 
-[node name="PanelContainer" type="Control" parent="."]
+[node name="icon" type="Sprite" parent="."]
+position = Vector2( 20, 70 )
+texture = ExtResource( 2 )
+
+[node name="PanelContainer" type="Panel" parent="."]
+margin_right = 120.0
+margin_bottom = 170.0
+custom_styles/panel = ExtResource( 3 )
 
 [node name="Exclusive Checkbox" type="VBoxContainer" parent="PanelContainer"]
 margin_right = 90.0
 margin_bottom = 168.0
 custom_constants/separation = 0
-script = ExtResource( 3 )
+script = ExtResource( 4 )
 sender = "Sand"
 
 [node name="Sand" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
@@ -67,10 +72,11 @@ margin_bottom = 168.0
 text = "Automata"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
-margin_left = 70.0
-margin_right = 121.0
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -51.0
 margin_bottom = 80.0
-script = ExtResource( 3 )
+script = ExtResource( 4 )
 sender = "1x1"
 
 [node name="1x1" type="CheckBox" parent="PanelContainer/VBoxContainer"]
@@ -93,11 +99,11 @@ text = "5x5"
 
 [node name="Pause" type="CheckBox" parent="PanelContainer"]
 margin_left = 70.0
-margin_top = 96.0
-margin_right = 160.0
-margin_bottom = 120.0
+margin_top = 100.0
+margin_right = 136.0
+margin_bottom = 124.0
 text = "Pause"
-[connection signal="checkboxChanged" from="PanelContainer/Exclusive Checkbox" to="TileMap" method="SetParticle"]
+[connection signal="checkboxChanged" from="PanelContainer/Exclusive Checkbox" to="." method="SetParticle"]
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Sand" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 0, "Sand" ]]
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Water" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 1, "Water" ]]
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Plant" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 2, "Plant" ]]
@@ -105,8 +111,8 @@ text = "Pause"
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Fire" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 4, "Fire" ]]
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Wall" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 8, "Wall" ]]
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Automata" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 9, "Automata" ]]
-[connection signal="checkboxChanged" from="PanelContainer/VBoxContainer" to="TileMap" method="SetBrushSize"]
+[connection signal="checkboxChanged" from="PanelContainer/VBoxContainer" to="." method="SetBrushSize"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/1x1" to="PanelContainer/VBoxContainer" method="changeSelected" binds= [ 1, "1x1" ]]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/3x3" to="PanelContainer/VBoxContainer" method="changeSelected" binds= [ 3, "3x3" ]]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/5x5" to="PanelContainer/VBoxContainer" method="changeSelected" binds= [ 5, "5x5" ]]
-[connection signal="toggled" from="PanelContainer/Pause" to="TileMap" method="TogglePause"]
+[connection signal="toggled" from="PanelContainer/Pause" to="." method="TogglePause"]

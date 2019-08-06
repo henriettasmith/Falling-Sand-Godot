@@ -1,32 +1,53 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Tileset.tres" type="TileSet" id=1]
-[ext_resource path="res://icon.png" type="Texture" id=2]
-[ext_resource path="res://BlackUIStylebox.tres" type="StyleBox" id=3]
-[ext_resource path="res://ExclusiveCheckbox.cs" type="Script" id=4]
+[ext_resource path="res://BlackUIStylebox.tres" type="StyleBox" id=2]
+[ext_resource path="res://ExclusiveCheckbox.cs" type="Script" id=3]
 
-[node name="TileMap" type="TileMap"]
+[sub_resource type="CSharpScript" id=1]
+resource_name = "Main"
+script/source = "using Godot;
+using System;
+
+public class Main : TileMap
+{
+    // Declare member variables here. Examples:
+    // private int a = 2;
+    // private string b = \"text\";
+
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
+    {
+        
+    }
+
+//  // Called every frame. 'delta' is the elapsed time since the previous frame.
+//  public override void _Process(float delta)
+//  {
+//      
+//  }
+}
+"
+
+[node name="Main" type="TileMap"]
 tile_set = ExtResource( 1 )
 cell_size = Vector2( 4, 4 )
 format = 1
+script = SubResource( 1 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 
-[node name="icon" type="Sprite" parent="."]
-position = Vector2( 20, 70 )
-texture = ExtResource( 2 )
-
 [node name="PanelContainer" type="Panel" parent="."]
 margin_right = 120.0
-margin_bottom = 170.0
-custom_styles/panel = ExtResource( 3 )
+margin_bottom = 168.0
+custom_styles/panel = ExtResource( 2 )
 
 [node name="Exclusive Checkbox" type="VBoxContainer" parent="PanelContainer"]
 margin_right = 90.0
 margin_bottom = 168.0
 custom_constants/separation = 0
-script = ExtResource( 4 )
+script = ExtResource( 3 )
 sender = "Sand"
 
 [node name="Sand" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
@@ -76,7 +97,7 @@ anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -51.0
 margin_bottom = 80.0
-script = ExtResource( 4 )
+script = ExtResource( 3 )
 sender = "1x1"
 
 [node name="1x1" type="CheckBox" parent="PanelContainer/VBoxContainer"]

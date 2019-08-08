@@ -3,6 +3,11 @@ using System;
 
 public class Main : TileMap
 {
+    public override void _Ready()
+    {
+        //this.
+    }
+
     public void SetParticle(int id)
     {
         GD.Print(id);

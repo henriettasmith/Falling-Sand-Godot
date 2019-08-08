@@ -14,7 +14,7 @@ public struct Position
     public static Position operator +(Position p1, Position p2)
     {
         return new Position(p1.x + p2.x, p1.y + p2.y);
-    } 
+    }
 }
 
 public enum PARTICLE{EMPTY = -1, SAND, WATER, PLANT, OIL, FIRE, WALL, AUTOMATA}

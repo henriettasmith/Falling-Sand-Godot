@@ -31,12 +31,16 @@ public class Main : TileMap
 
 [node name="Main" type="TileMap"]
 tile_set = ExtResource( 1 )
-cell_size = Vector2( 4, 4 )
+cell_size = Vector2( 8, 8 )
 format = 1
 script = SubResource( 1 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
+
+[node name="InputMask" type="Control" parent="."]
+margin_right = 1024.0
+margin_bottom = 768.0
 
 [node name="PanelContainer" type="Panel" parent="."]
 margin_right = 136.0
@@ -46,6 +50,7 @@ custom_styles/panel = ExtResource( 2 )
 [node name="Exclusive Checkbox" type="VBoxContainer" parent="PanelContainer"]
 margin_right = 90.0
 margin_bottom = 168.0
+mouse_filter = 0
 custom_constants/separation = 0
 script = ExtResource( 3 )
 sender = "Sand"
@@ -53,6 +58,7 @@ sender = "Sand"
 [node name="Sand" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
 margin_right = 90.0
 margin_bottom = 24.0
+focus_mode = 0
 pressed = true
 text = "Sand"
 
@@ -60,36 +66,42 @@ text = "Sand"
 margin_top = 24.0
 margin_right = 90.0
 margin_bottom = 48.0
+focus_mode = 0
 text = "Water"
 
 [node name="Plant" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
 margin_top = 48.0
 margin_right = 90.0
 margin_bottom = 72.0
+focus_mode = 0
 text = "Plant"
 
 [node name="Oil" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
 margin_top = 72.0
 margin_right = 90.0
 margin_bottom = 96.0
+focus_mode = 0
 text = "Oil"
 
 [node name="Fire" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
 margin_top = 96.0
 margin_right = 90.0
 margin_bottom = 120.0
+focus_mode = 0
 text = "Fire"
 
 [node name="Wall" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
 margin_top = 120.0
 margin_right = 90.0
 margin_bottom = 144.0
+focus_mode = 0
 text = "Wall"
 
 [node name="Automata" type="CheckBox" parent="PanelContainer/Exclusive Checkbox"]
 margin_top = 144.0
 margin_right = 90.0
 margin_bottom = 168.0
+focus_mode = 0
 text = "Automata"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
@@ -97,43 +109,67 @@ anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -66.0
 margin_bottom = 80.0
+mouse_filter = 0
+custom_constants/separation = 0
 script = ExtResource( 3 )
 sender = "1x1"
 
 [node name="1x1" type="CheckBox" parent="PanelContainer/VBoxContainer"]
 margin_right = 66.0
 margin_bottom = 24.0
+focus_mode = 0
 pressed = true
 text = "1x1"
 
 [node name="3x3" type="CheckBox" parent="PanelContainer/VBoxContainer"]
-margin_top = 28.0
+margin_top = 24.0
 margin_right = 66.0
-margin_bottom = 52.0
+margin_bottom = 48.0
+focus_mode = 0
 text = "3x3"
 
 [node name="5x5" type="CheckBox" parent="PanelContainer/VBoxContainer"]
-margin_top = 56.0
+margin_top = 48.0
 margin_right = 66.0
-margin_bottom = 80.0
+margin_bottom = 72.0
+focus_mode = 0
 text = "5x5"
 
-[node name="Pause" type="CheckBox" parent="PanelContainer"]
-margin_left = 70.0
-margin_top = 100.0
-margin_right = 136.0
-margin_bottom = 124.0
+[node name="Gen" type="CheckBox" parent="PanelContainer/VBoxContainer"]
+margin_top = 72.0
+margin_right = 66.0
+margin_bottom = 96.0
+focus_mode = 0
+text = "Gen"
+
+[node name="Pause" type="CheckBox" parent="PanelContainer/VBoxContainer"]
+margin_top = 96.0
+margin_right = 66.0
+margin_bottom = 120.0
+focus_mode = 0
 text = "Pause"
+
+[node name="Step" type="Button" parent="PanelContainer"]
+margin_left = 76.0
+margin_top = 124.0
+margin_right = 132.0
+margin_bottom = 144.0
+text = "Step"
+[connection signal="mouse_entered" from="InputMask" to="." method="MouseOver" binds= [ true ]]
+[connection signal="mouse_exited" from="InputMask" to="." method="MouseOver" binds= [ false ]]
 [connection signal="checkboxChanged" from="PanelContainer/Exclusive Checkbox" to="." method="SetParticle"]
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Sand" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 0, "Sand" ]]
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Water" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 1, "Water" ]]
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Plant" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 2, "Plant" ]]
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Oil" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 3, "Oil" ]]
 [connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Fire" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 4, "Fire" ]]
-[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Wall" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 8, "Wall" ]]
-[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Automata" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 9, "Automata" ]]
+[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Wall" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 5, "Wall" ]]
+[connection signal="pressed" from="PanelContainer/Exclusive Checkbox/Automata" to="PanelContainer/Exclusive Checkbox" method="changeSelected" binds= [ 6, "Automata" ]]
 [connection signal="checkboxChanged" from="PanelContainer/VBoxContainer" to="." method="SetBrushSize"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/1x1" to="PanelContainer/VBoxContainer" method="changeSelected" binds= [ 1, "1x1" ]]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/3x3" to="PanelContainer/VBoxContainer" method="changeSelected" binds= [ 3, "3x3" ]]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/5x5" to="PanelContainer/VBoxContainer" method="changeSelected" binds= [ 5, "5x5" ]]
-[connection signal="toggled" from="PanelContainer/Pause" to="." method="TogglePause"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/Gen" to="." method="ToggleGen"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/Pause" to="." method="TogglePause"]
+[connection signal="pressed" from="PanelContainer/Step" to="." method="Step"]
+[connection signal="pressed" from="PanelContainer/Step" to="PanelContainer/VBoxContainer/Pause" method="set_pressed" binds= [ true ]]

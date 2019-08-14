@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="ExclusiveCheckbox.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="ParticleGrid.cs" />
     <Compile Include="Particles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

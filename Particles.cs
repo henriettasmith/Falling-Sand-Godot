@@ -1,156 +1,516 @@
+using Godot;
 using System.Collections.Generic;
 
-public struct Position
-{
-    public int x;
-    public int y;
-
-    public Position(int x, int y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-
-    public static Position operator +(Position p1, Position p2)
-    {
-        return new Position(p1.x + p2.x, p1.y + p2.y);
-    }
-}
-
-public enum PARTICLE{EMPTY = -1, SAND, WATER, PLANT, OIL, FIRE, WALL, AUTOMATA}
-public enum DIRECTION{RIGHT, DOWN, LEFT, UP}
+public enum ePARTICLE{EMPTY = -1, SAND, WATER, PLANT, OIL, FIRE, WALL, AUTOMATA, AUTOMATA_OFF, GENERATOR}
 
 public abstract class Particle
 {
-    public Position position;
+    public Vector2 position;
+    public bool newlyCreated = true;
     public bool deathFlag = false;
-    public abstract void Update(Dictionary<Position, Particle> grid);
-    public abstract int id();
+    public ParticleGrid grid;
+    public virtual void Update() {}
+    public virtual void LateUpdate() {}
+    public abstract ePARTICLE id();
+    public abstract string color();
 
-    public Particle[] Surroundings(Dictionary<Position, Particle> grid)
+    public static Particle New(ePARTICLE id)
     {
-        Particle[] ret = new Particle[4];
-
-        //right
-        if(grid.TryGetValue(new Position(position.x + 1, position.y), out ret[(int)DIRECTION.RIGHT]) == false)
-            ret[(int)DIRECTION.RIGHT] = new Empty();
-        
-        //down
-        if(grid.TryGetValue(new Position(position.x, position.y + 1), out ret[(int)DIRECTION.DOWN]) == false)
-            ret[(int)DIRECTION.DOWN] = new Empty();
-        
-        //left
-        if(grid.TryGetValue(new Position(position.x - 1, position.y), out ret[(int)DIRECTION.LEFT]) == false)
-            ret[(int)DIRECTION.LEFT] = new Empty();
-        
-        //up
-        if(grid.TryGetValue(new Position(position.x, position.y - 1), out ret[(int)DIRECTION.UP]) == false)
-            ret[(int)DIRECTION.UP] = new Empty();
-        
-        return ret;
+        switch(id)
+        {
+            case ePARTICLE.WALL:
+                return new Wall();
+            case ePARTICLE.SAND:
+                return new Sand();
+            case ePARTICLE.WATER:
+                return new Water();
+            case ePARTICLE.OIL:
+                return new Oil();
+            case ePARTICLE.PLANT:
+                return new Plant();
+            case ePARTICLE.FIRE:
+                return new Fire();
+            case ePARTICLE.AUTOMATA:
+            case ePARTICLE.AUTOMATA_OFF:
+                return new Automata();
+            default:
+                return new Empty();
+        }
     }
 }
-
 public class Empty : Particle
 {
-    public override void Update(Dictionary<Position, Particle> grid)
+    public override void Update()
     {
-        return;
+        GD.Print("Empty Updated. Something is Wrong");
     }
 
-    public override int id()
+    public override ePARTICLE id()
     {
-        return -1;
-    }
-}
-
-public class Sand : Particle
-{
-    public override void Update(Dictionary<Position, Particle> grid)
-    {
-        Particle[] surrounding = Surroundings(grid);
+        return ePARTICLE.EMPTY;
     }
 
-    public override int id()
+    public override string color()
     {
-        return 0;
+        GD.Print("Empty Colored. Something is Wrong");
+        return "Black";
     }
 }
-
-public class Water : Particle
-{
-    public override void Update(Dictionary<Position, Particle> grid)
-    {
-
-    }
-
-    public override int id()
-    {
-        return 1;
-    }
-}
-
-public class Plant : Particle
-{
-    public override void Update(Dictionary<Position, Particle> grid)
-    {
-
-    }
-
-    public override int id()
-    {
-        return 2;
-    }
-}
-
-public class Oil : Particle
-{
-    public override void Update(Dictionary<Position, Particle> grid)
-    {
-
-    }
-
-    public override int id()
-    {
-        return 3;
-    }
-}
-
-public class Fire : Particle
-{
-    public override void Update(Dictionary<Position, Particle> grid)
-    {
-
-    }
-
-    public override int id()
-    {
-        return 4;
-    }
-}
-
 public class Wall : Particle
 {
-    public override void Update(Dictionary<Position, Particle> grid)
+    public override ePARTICLE id()
     {
-        return;
+        return ePARTICLE.WALL;
     }
 
-    public override int id()
+    public override string color()
     {
-        return 5;
+        return "Gray";
     }
 }
-
-public class Automata : Particle
+public class Sand : Particle
 {
-    public override void Update(Dictionary<Position, Particle> grid)
+    public override void Update()
     {
+        Particle down = grid.GetParticle(position + Vector2.Down);
+        switch(down.id())
+        {
+            case ePARTICLE.EMPTY:
+            case ePARTICLE.WATER:
+            case ePARTICLE.OIL:
+                grid.SwapParticles(position, down.position);
+                break;
+            default:
+                break;
+        }
 
+        Particle left = grid.GetParticle(position + Vector2.Left);
+        switch(left.id())
+        {
+            case ePARTICLE.EMPTY:
+            case ePARTICLE.WATER:
+            case ePARTICLE.OIL:
+                if(GD.Randf() < (double)1/3)
+                    grid.SwapParticles(position, left.position);
+                break;
+            default:
+                break;
+        }
+
+        Particle right = grid.GetParticle(position + Vector2.Right);
+        switch(right.id())
+        {
+            case ePARTICLE.EMPTY:
+            case ePARTICLE.WATER:
+            case ePARTICLE.OIL:
+                if(GD.Randf() < (double)1/3)
+                    grid.SwapParticles(position, right.position);
+                break;
+            default:
+                break;
+        }
     }
 
-    public override int id()
+    public override ePARTICLE id()
     {
-        return 6;
+        return ePARTICLE.SAND;
+    }
+
+    public override string color()
+    {
+        return "Tan";
+    }
+}
+public class Water : Particle
+{
+    public override void Update()
+    {
+        Particle down = grid.GetParticle(position + Vector2.Down);
+        switch(down.id())
+        {
+            case ePARTICLE.EMPTY:
+            case ePARTICLE.OIL:
+                grid.SwapParticles(position, down.position);
+                break;
+            default:
+                break;
+        }
+
+        Particle left = grid.GetParticle(position + Vector2.Left);
+        switch(left.id())
+        {
+            case ePARTICLE.EMPTY:
+            case ePARTICLE.OIL:
+                if(GD.Randf() < (double)1/3)
+                    grid.SwapParticles(position, left.position);
+                break;
+            default:
+                break;
+        }
+
+        Particle right = grid.GetParticle(position + Vector2.Right);
+        switch(right.id())
+        {
+            case ePARTICLE.EMPTY:
+            case ePARTICLE.OIL:
+                if(GD.Randf() < (double)1/3)
+                    grid.SwapParticles(position, right.position);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public override ePARTICLE id()
+    {
+        return ePARTICLE.WATER;
+    }
+
+    public override string color()
+    {
+        return "Blue";
+    }
+}
+public class Plant : Particle
+{
+    public override void Update()
+    {
+        Particle up = grid.GetParticle(position + Vector2.Up);
+        switch(up.id())
+        {
+            case ePARTICLE.WATER:
+                grid.AddParticle(Particle.New(ePARTICLE.PLANT),position + Vector2.Up);
+                break;
+            default:
+                break;
+        }
+
+        Particle left = grid.GetParticle(position + Vector2.Left);
+        switch(left.id())
+        {
+            case ePARTICLE.WATER:
+                grid.AddParticle(Particle.New(ePARTICLE.PLANT),position + Vector2.Left);
+                break;
+            default:
+                break;
+        }
+
+        Particle right = grid.GetParticle(position + Vector2.Right);
+        switch(right.id())
+        {
+            case ePARTICLE.WATER:
+                grid.AddParticle(Particle.New(ePARTICLE.PLANT),position + Vector2.Right);
+                break;
+            default:
+                break;
+        }
+
+        Particle down = grid.GetParticle(position + Vector2.Down);
+        switch(down.id())
+        {
+            case ePARTICLE.WATER:
+                grid.AddParticle(Particle.New(ePARTICLE.PLANT),position + Vector2.Down);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public override ePARTICLE id()
+    {
+        return ePARTICLE.PLANT;
+    }
+
+    public override string color()
+    {
+        return "Green";
+    }
+}
+public class Oil : Particle
+{
+    public override void Update()
+    {
+        Particle down = grid.GetParticle(position + Vector2.Down);
+        switch(down.id())
+        {
+            case ePARTICLE.EMPTY:
+                grid.SwapParticles(position, down.position);
+                break;
+            default:
+                break;
+        }
+
+        Particle left = grid.GetParticle(position + Vector2.Left);
+        switch(left.id())
+        {
+            case ePARTICLE.EMPTY:
+                if(GD.Randf() < (double)1/3)
+                    grid.SwapParticles(position, left.position);
+                break;
+            default:
+                break;
+        }
+
+        Particle right = grid.GetParticle(position + Vector2.Right);
+        switch(right.id())
+        {
+            case ePARTICLE.EMPTY:
+                if(GD.Randf() < (double)1/3)
+                    grid.SwapParticles(position, right.position);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public override ePARTICLE id()
+    {
+        return ePARTICLE.OIL;
+    }
+
+    public override string color()
+    {
+        return "Brown";
+    }
+}
+public class Fire : Particle
+{
+    int life = 20;
+
+    public override void Update()
+    {
+        Particle up = grid.GetParticle(position + Vector2.Up);
+        switch(up.id())
+        {
+            case ePARTICLE.EMPTY:
+                grid.SwapParticles(position, up.position);
+                break;
+            case ePARTICLE.FIRE:
+                break;
+            case ePARTICLE.PLANT:
+            case ePARTICLE.OIL:
+                grid.AddParticle(Particle.New(ePARTICLE.FIRE),position + Vector2.Up);
+                break;
+            default:
+                grid.RemoveParticle(position);
+                break;
+        }
+
+        Particle left = grid.GetParticle(position + Vector2.Left);
+        switch(left.id())
+        {
+            case ePARTICLE.EMPTY:
+                if(GD.Randf() < (double)1/8)
+                {
+                    life -=2;
+                    grid.SwapParticles(position, left.position);
+                }
+                break;
+            case ePARTICLE.FIRE:
+                break;
+            case ePARTICLE.PLANT:
+            case ePARTICLE.OIL:
+                grid.AddParticle(Particle.New(ePARTICLE.FIRE),position + Vector2.Left);
+                break;
+            default:
+                grid.RemoveParticle(position);
+                break;
+        }
+
+        Particle right = grid.GetParticle(position + Vector2.Right);
+        switch(right.id())
+        {
+            case ePARTICLE.EMPTY:
+                if(GD.Randf() < (double)1/8)
+                {
+                    life -=2;
+                    grid.SwapParticles(position, right.position);
+                }
+                break;
+            case ePARTICLE.FIRE:
+                break;
+            case ePARTICLE.PLANT:
+            case ePARTICLE.OIL:
+                grid.AddParticle(Particle.New(ePARTICLE.FIRE),position + Vector2.Right);
+                break;
+            default:
+                grid.RemoveParticle(position);
+                break;
+        }
+
+        Particle down = grid.GetParticle(position + Vector2.Down);
+        switch(down.id())
+        {
+            case ePARTICLE.PLANT:
+            case ePARTICLE.OIL:
+                grid.AddParticle(Particle.New(ePARTICLE.FIRE),position + Vector2.Down);
+                break;
+            default:
+                break;
+        }
+
+        --life;
+        if(life <= 0)
+        {
+            grid.RemoveParticle(position);
+            return;
+        }
+    }
+
+    public override ePARTICLE id()
+    {
+        return ePARTICLE.FIRE;
+    }
+
+    public override string color()
+    {
+        if(life >= 17)
+            return "White";
+        if(life >= 14)
+            return "Yellow";
+        if(life >= 8)
+            return "Orange";
+        return "Red";
+    }
+}
+public class Automata : Particle
+{
+    bool willActivate = false;
+    bool active = true;
+
+    public bool shouldActivate()
+    {
+        int count = 0;
+        for(int x = -1; x <= 1; ++x)
+        {
+            for(int y = -1; y <= 1; ++y)
+            {
+                if(x == 0 && y == 0)
+                    continue;
+                Vector2 pos = position + new Vector2(x, y);
+                Particle p = grid.GetParticle(pos);
+                if(p.id() == ePARTICLE.AUTOMATA)
+                {
+                    ++count;
+                }
+            }
+        }
+        if(active && (count == 2 || count == 3))
+        {
+            return true;
+        }
+        else if(!active && count == 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public override void Update()
+    {
+        for(int x = -1; x <= 1; ++x)
+        {
+            for(int y = -1; y <= 1; ++y)
+            {
+                if(x == 0 && y == 0)
+                    continue;
+                Vector2 pos = position + new Vector2(x, y);
+                Particle p = grid.GetParticle(pos);
+                if(active && p.id() == ePARTICLE.EMPTY)
+                {
+                    Automata a = new Automata();
+                    a.active = false;
+                    grid.AddParticle(a, pos);
+                    a.willActivate = a.shouldActivate();
+                }
+            }
+        }
+
+        willActivate = shouldActivate();
+
+        //GD.Print(position, count, willActivate);
+    }
+
+    public override void LateUpdate()
+    {
+        active = willActivate;
+        if(active == false)
+        {
+            grid.RemoveParticle(position);
+        }
+    }
+
+    public override ePARTICLE id()
+    {
+        if(active)
+            return ePARTICLE.AUTOMATA;
+        return ePARTICLE.AUTOMATA_OFF;
+    }
+
+    public override string color()
+    {
+        if(active)
+            return "Purple";
+        return "Pink";
+    }
+}
+public class Generator: Particle
+{
+    public ePARTICLE type = ePARTICLE.EMPTY;
+
+    public override void Update()
+    {
+        Particle down = grid.GetParticle(position + Vector2.Down);
+        switch(down.id())
+        {
+            case ePARTICLE.EMPTY:
+                grid.AddParticle(Particle.New(type), down.position);
+                break;
+            default:
+                break;
+        }
+
+        Particle left = grid.GetParticle(position + Vector2.Left);
+        switch(left.id())
+        {
+            case ePARTICLE.EMPTY:
+                grid.AddParticle(Particle.New(type), left.position);
+                break;
+            default:
+                break;
+        }
+
+        Particle right = grid.GetParticle(position + Vector2.Right);
+        switch(right.id())
+        {
+            case ePARTICLE.EMPTY:
+                grid.AddParticle(Particle.New(type), right.position);
+                break;
+            default:
+                break;
+        }
+
+        Particle up = grid.GetParticle(position + Vector2.Up);
+        switch(up.id())
+        {
+            case ePARTICLE.EMPTY:
+                grid.AddParticle(Particle.New(type), up.position);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public override ePARTICLE id()
+    {
+        return ePARTICLE.GENERATOR;
+    }
+
+    public override string color()
+    {
+        return "Pink";
     }
 }
